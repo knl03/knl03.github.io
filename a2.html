@@ -4,15 +4,156 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
 
-    <title>Example Student's HCDE 439 Physical Computing Page!</title>
-
+    <title>Kiefer Law's HCDE 439 Physical Computing Page!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/monokai.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
     <link href="style.css" rel="stylesheet" type="text/css" />
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async 
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+
+    <script>hljs.highlightAll();</script>
   </head>
   <body>
-    <h1>Example Student's Assignment 2!</h1>
+    <h1>Kiefer Law's Assignment 2!</h1>
     <div class="header">
-      <img src="red-panda.jpg" />
-      <p>Here is all the documentation for assignment 2!</p>
+      <img src="A2_files\IMG_6075.jpg" width="200" height="500"/>
+      <h2>Here is all the documentation for A2 Fade</h2>
     </div>
+    <div class="body">
+      <br><h3>This is my arduino code:</h3>
+      <pre><code class="language-cpp">
+    // Credit to https://www.circuitgeeks.com/arduino-push-button-tutorial/ for help learning how to implement
+    // a button and LED on Arduino and to Google Gemini for assistance debugging the state switch between fade and
+    // analog blue led.
+
+    // A2 - Fade
+    // This code controls an RGB led on an Arduino circuit to switch between full blue light and a fading Red and Green 
+    // mode using a button.
+    // HCDE 439 Physical Computing
+    // 10/12/2025
+    // Kiefer Law
+
+
+
+    // initialize pin numbers for button and LEDs
+    const int buttonPin = 13;
+    const int bluePin = 9;
+    const int greenPin = 6;
+    const int redPin = 5;
+
+    // Define a variable to hold the current button state
+    int buttonState = 0;
+
+    void setup() {
+      // Set the LED pins as outputs
+      pinMode(bluePin, OUTPUT);
+      pinMode(greenPin, OUTPUT); 
+      pinMode(redPin, OUTPUT);
+      
+      // Setting the button as an input, where HIGH is not pressed
+      // and LOW is pressed.
+      pinMode(buttonPin, INPUT);
+    }
+
+    void loop() {
+      // Read the state of the button
+      buttonState = digitalRead(buttonPin);
+
+      // When button not pressed turn B LED on and R & G off.
+      if (buttonState == HIGH) {
+
+        digitalWrite(bluePin, HIGH);
+        
+        analogWrite(redPin, 0); 
+        analogWrite(greenPin, 0); 
+      } 
+      
+      // When button is pressed (held), turn off B led and fade R & G. 
+      else { 
+
+        digitalWrite(bluePin, LOW);
+        
+        // Fade in R and out G.
+        for (int i = 0; i <= 255; i += 5) {
+          analogWrite(redPin, i);            
+          analogWrite(greenPin, 255 - i);      
+          
+      
+          // Check if button is still being pressed, if not then end the loop.
+          if (digitalRead(buttonPin) == HIGH) {
+            break; 
+          }
+
+          // Fade delay time
+          delay(20); 
+        }
+
+        // Fade in G and out R.
+        for (int i = 255; i >= 0; i -= 5) {
+          analogWrite(redPin, i);              
+          analogWrite(greenPin, 255 - i);      
+          
+          // Check again if the button is still pressed, exit if it isn't.
+          if (digitalRead(buttonPin) == HIGH) {
+            break; 
+          }
+          delay(20);
+        }
+      }
+    }
+    </code></pre>
+    <br><h3>Here is my circuit diagram:</h3>
+      <img src="A2_files/A2circuit.png" width="500" height="300" />
+    <p class="h1"><h3>Here are my calculations for resistors:</h3><br>
+      <h2>Blue LED:</h2>
+      <div>
+        \[
+        5 - 3.3 = 0.02 \cdot \Omega \\
+        \]
+        \[
+        \frac{1.7}{0.02} = \frac{0.02 \cdot \Omega}{0.02} \\
+        \]
+        \[
+        85 = \Omega
+        \]
+
+      </div>
+    
+
+      <h2>Red and Green LEDs:</h2>
+      <div>
+        \[
+        5 - 1.8 = 0.02 \cdot \Omega 
+        \]
+        \[
+        \frac{3.2}{0.02} = \frac{0.02 \cdot \Omega}{0.02}
+        \]
+        \[
+        160 = \Omega
+        \]
+      </div>
+      I used 220 &Omega; resistors for the red and Green LEDs and 100 &Omega; resistor for the blue LED, because they were the closest resistors available. 
+      I don't have any calculations for the button, as it has has minimal current draw. I selected 10k &Omega; because that is a popular value for pull-down resistors.
+      </p>
+    </div>
+    <br><h3>Here is a gif of my circuit in action:</h3>
+    <img src="A2_files\FadeGif.gif" width="800" height="500"/>
+    <pre><p>
+      1. Here is my graph:
+      <img src="A2_files\Voltage over time LED.png" width="500" height="300" />
+
+      2. The circuit would run for about 26 hours. Since the 3 leds draw about 46 mA, 1200 mAh / 46 mA = 26.08 hours.
+
+      3. I measured 3 volts across the blue LED (which is at HIGH). This is higher than the expected 
+      1.7 volts.
+
+      4. I used Google Gemini to help me debug why my code wasn't correctly state switching between blue on/off and R/G fade on/off.
+      The main issue it found was that my for loops were creating significant periods where the button switch wouldn't register
+      because of the delays in the loop between the current checks I had. It suggested adding a break statement into each of my for loops to 
+      end the loop if the button was pressed.
+    </p></pre>
   </body>
 </html>
