@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Kiefer Law's HCDE 439 Physical Computing Page!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/monokai.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async 
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+
+    <script>hljs.highlightAll();</script>
+  </head>
+  <body>
+    <h1>Kiefer Law's Assignment 3!</h1>
+    <div class="header">
+      <img src="A3_files\IMG_6089.jpg" width="200" height="500"/>
+      <h2>Here is all the documentation for A3: Input Output</h2>
+    </div>
+    <div class="body">
+      <br><h3>This is my arduino code:</h3>
+      <pre><code class="language-cpp">
+        // Credit to https://projecthub.arduino.cc/tropicalbean/how-to-use-a-photoresistor-1143fd
+        // for help starting out with the photoresistor. 
+
+        int buzzerPin = 9; // PWM pin for buzzer control
+
+        void setup() {
+            Serial.begin(9600); // baud rate for data transmission
+            pinMode(buzzerPin,  OUTPUT);    
+        }
+
+        void loop() {
+            int photoValue = analogRead(A0); // photoresistor values read by A0 pin
+
+            int buzzerValue = map(photoValue, 0, 1023, 0, 255);
+
+            // printing values to serial monitor
+            Serial.println("Analog Photoresistor Value: ");
+            Serial.println(photoValue);
+            
+            Serial.println("Adjusted Buzzer Value: ");
+            Serial.println(buzzerValue);
+
+        
+            // Plays tone volume corresponding to level of brightness.
+            // Will play beeping tone if photoresistor exposed to high brightness.
+            if (buzzerValue > 160) {
+            analogWrite(buzzerPin, buzzerValue - 100);
+            delay(250);
+            analogWrite(buzzerPin, buzzerValue);
+            } else {
+            analogWrite(buzzerPin, buzzerValue);
+            }
+            
+            delay(500);
+        }
+
+    </code></pre>
+    <br><h3>Here are my circuit diagrams:</h3>
+      <img src="A3_files\A3circuit.svg" width="500" height="400" />
+    <p class="h1"><h3>Here is the calculation for the voltage divider:</h3><br>
+      <div>
+        \[
+        \mathrm{V}_{out} = 5 \cdot \frac{10000}{7000 + 10000}
+        \]
+        \[
+        \mathrm{V}_{out} = 2.94V
+        \]
+
+      </div>
+      I chose to use a 10k &Omega; resistor for the voltage divider after testing multiple resistors
+      and monitoring the analog read values on the serial monitor. The 10k &Omega; resistor provided a good range of values.
+      7000 &Omega; is the approximate resistance of the photoresistor under ambient light conditions in the room I was in. A 2.94V
+      output allows for the voltage to both increase and decrease, which allows for the buzzer to change both when the room gets
+        brighter and darker.
+      </p>
+    </div>
+    <br><h3>Here is a gif of my circuit in action:</h3>
+    <img src="A3_files\A3video.gif" width="300" height="500"/>
+    <pre><p>
+      1. Yes, either R1 or R2 could be the variable resistor. The voltage divider will work either way, but the output voltage 
+      vary more if the variable resistor is R2 (the resistor connected to ground). This is because as R2 changes, it has a more
+      affect on the ratio of R1 to R2, which determines the output voltage.
+
+      2. I measured the photoresistor's at ambient light levels and when i exposed it to a bright light. At ambient it is at about 7k &Omega;,
+        and when exposed to bright light it drops to about 300 &Omega;. I already calculated the voltage at ambient light earlier, here is my calculation for 
+        bright light:
+    </p></pre>
+        <div>
+        \[
+        \mathrm{V}_{out} = 5 \cdot \frac{10000}{300 + 10000}
+        \]
+        \[
+        \mathrm{V}_{out} = 4.85V
+        \]
+        </div>
+    <pre><p>
+        Here is my graph of the voltage at Vmeasure of the voltage divider over time in the attached gif:
+        < src="A3_files\Voltage over time A3.png" width="500" height="300" />
+      3. With 8bit buzzer control and 10bit sensor reading the code for the map() function looks like this:
+            map(photoValue, 0, 1023, 0, 255);
+        If the buzzer and photoresistor were to be mapped to 10 and 16 bit respectively, then the code would look like this:
+            map(photoValue, 0, 65535, 0, 1023);
+    </p></pre>
+    <h3>Here is a video with audio, so the buzzer tone change can be heard. I did not realize until I had finished this project
+        that we were not allowed to use the buzzer.
+    </h3>
+   <video width="500" height="300" controls>
+    <source src="A3_files\IMG_6088.mp4" type="video/mp4">
+    </video>
+
+  </body>
+</html>
