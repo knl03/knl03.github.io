@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Kiefer Law's HCDE 439 Physical Computing Page!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/monokai.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async 
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+
+    <script>hljs.highlightAll();</script>
+  </head>
+  <body>
+    <h1>Kiefer Law's Assignment 4!</h1>
+    <div class="header">
+      <img src="A4_files\A4_circuit.jpg" width="200" height="500"/>
+      <h2>Here is all the documentation for A4: Libraries</h2>
+    </div>
+    <div class="body">
+      <br><h3>This is my arduino code:</h3>
+      <pre><code class="language-cpp">
+        // i used this tutorial for help setting up the servo motor https://docs.arduino.cc/tutorials/generic/basic-servo-control/
+        // and I used this tutorial for help setting up the ultrasonic sensor https://projecthub.arduino.cc/Isaac100/getting-started-with-the-hc-sr04-ultrasonic-sensor-7cabe1.
+
+        // Included libraries for servo motor and ultrasonic sensor.
+        #include <Ultrasonic.h>
+        #include <Servo.h>
+
+        Ultrasonic ultrasonic(9, 10); // initializing pins for ultrasonic 
+
+        Servo myservo; 
+
+        int dist; // current measured distance in cm.
+        int prevDist = 0; // previously measured distance in cm.
+
+        int pos = 0; // position for servo motor. Ranging between 0-180. 
+
+        void setup() {
+        Serial.begin(9600);
+        myservo.attach(6); // pin for motor control
+        }
+
+        void loop() {
+        
+        dist = ultrasonic.read(CM);
+        Serial.println("distance (CM): " + dist); // print distance detected by ultrasonic sensor in cm to monitor.
+        
+        // When the detected object gets farther from the sensor the position of the servo motor will increase and if the object
+        // gets closer then the position will decrease. Sometimes the sensor will miss the object above it and detect the ceiling
+        // instead, I added the differential check for the two distances to try to account for this. 
+        if (dist > prevDist  && pos <= 174 && dist - prevDist <= 20) {
+            pos += 6;
+            myservo.write(pos);
+            Serial.println("position" + pos);
+            prevDist = dist;
+        } else if (dist < prevDist  && pos >= 6) {
+            pos -= 6;
+            myservo.write(pos);
+            Serial.println("position" + pos);
+            prevDist = dist;
+        }
+        delay(100);
+ 
+
+}
+
+    </code></pre>
+    <br><h3>Here are my circuit diagrams:</h3>
+      <img src="A4_files\A4_diagram.svg" width="500" height="400" />
+    </div>
+    <br><h3>Here is a gif of my circuit in action:</h3>
+    <img src="A4_files\A4_videodemo.gif" width="300" height="500"/>
+    <pre><p>
+      1. 
+
+      2. 
+      
+      3. 
+
+      4.
+  
+    </p></pre>
+    
+   
+
+  </body>
+</html>
