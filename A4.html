@@ -20,7 +20,7 @@
     <h1>Kiefer Law's Assignment 4!</h1>
     <div class="header">
       <img src="A4_files\A4_circuit.jpg" width="200" height="500"/>
-      <h2>Here is all the documentation for A4: Libraries</h2>
+      <h2>Here is all the documentation for A4: Libraries</h2>`
     </div>
     <div class="body">
       <br><h3>This is my arduino code:</h3>
@@ -29,8 +29,8 @@
         // and I used this tutorial for help setting up the ultrasonic sensor https://projecthub.arduino.cc/Isaac100/getting-started-with-the-hc-sr04-ultrasonic-sensor-7cabe1.
 
         // Included libraries for servo motor and ultrasonic sensor.
-        #include <Ultrasonic.h>
-        #include <Servo.h>
+        #include &lt;Ultrasonic.h>
+        #include &lt;Servo.h>
 
         Ultrasonic ultrasonic(9, 10); // initializing pins for ultrasonic 
 
@@ -42,33 +42,31 @@
         int pos = 0; // position for servo motor. Ranging between 0-180. 
 
         void setup() {
-        Serial.begin(9600);
-        myservo.attach(6); // pin for motor control
+            Serial.begin(9600);
+            myservo.attach(6); // pin for motor control
         }
 
         void loop() {
         
-        dist = ultrasonic.read(CM);
-        Serial.println("distance (CM): " + dist); // print distance detected by ultrasonic sensor in cm to monitor.
-        
-        // When the detected object gets farther from the sensor the position of the servo motor will increase and if the object
-        // gets closer then the position will decrease. Sometimes the sensor will miss the object above it and detect the ceiling
-        // instead, I added the differential check for the two distances to try to account for this. 
-        if (dist > prevDist  && pos <= 174 && dist - prevDist <= 20) {
-            pos += 6;
-            myservo.write(pos);
-            Serial.println("position" + pos);
-            prevDist = dist;
-        } else if (dist < prevDist  && pos >= 6) {
-            pos -= 6;
-            myservo.write(pos);
-            Serial.println("position" + pos);
-            prevDist = dist;
+            dist = ultrasonic.read(CM);
+            Serial.println("distance (CM): " + dist); // print distance detected by ultrasonic sensor in cm to monitor.
+            
+            // When the detected object gets farther from the sensor the position of the servo motor will increase and if the object
+            // gets closer then the position will decrease. Sometimes the sensor will miss the object above it and detect the ceiling
+            // instead, I added the differential check for the two distances to try to account for this. 
+            if (dist > prevDist  && pos <= 174 && dist - prevDist <= 20) {
+                pos += 6;
+                myservo.write(pos);
+                Serial.println("position" + pos);
+                prevDist = dist;
+            } else if (dist < prevDist  && pos >= 6) {
+                pos -= 6;
+                myservo.write(pos);
+                Serial.println("position" + pos);
+                prevDist = dist;
+            }
+            delay(100);
         }
-        delay(100);
- 
-
-}
 
     </code></pre>
     <br><h3>Here are my circuit diagrams:</h3>
@@ -77,14 +75,25 @@
     <br><h3>Here is a gif of my circuit in action:</h3>
     <img src="A4_files\A4_videodemo.gif" width="300" height="500"/>
     <pre><p>
-      1. 
+      1. <img src="A4_files\Voltage over time Pin 9.png" width="600" height="400" />
 
       2. 
+      If input < or > acceptable range {
+            ignore input
+      }
+            
       
       3. 
+      while running {
+            tally += input
+            count ++
+            average = tally / count
+      }
+      return average
 
-      4.
-  
+      4. I did not use AI tools for this since the code was pretty simple and I could find tutorials and
+        documentation online to help me. I initially tried to use the infrared sensor and tried for a long time to get it
+        working and asked AI for help. Eventually I gave up as I believe it may be fried.
     </p></pre>
     
    
