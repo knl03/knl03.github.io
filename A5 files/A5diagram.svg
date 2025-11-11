@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Circuit Diagram, cdlibrary.dll 4.0.0.0 -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" width="400" height="480" xmlns="http://www.w3.org/2000/svg">
+	<text x="70" y="160" style="font-family:Arial;font-size:11px;text-anchor:start" dominant-baseline="middle" transform="rotate(0, 70, 160)">LED strip </text>
+	<text x="140" y="35" style="font-family:Arial;font-size:12px;text-anchor:middle" dominant-baseline="baseline" transform="rotate(0, 140, 35)">9V outlet adapter</text>
+	<line x1="140" y1="43" x2="140" y2="70" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<ellipse cx="140" cy="40" rx="3" ry="3" style="fill-opacity:0;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-width:2" />
+	<text x="52" y="260" style="font-family:Arial;font-size:12px;text-anchor:end" dominant-baseline="middle" transform="rotate(0, 52, 260)">Pin 9</text>
+	<line x1="63" y1="260" x2="100" y2="260" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<ellipse cx="60" cy="260" rx="3" ry="3" style="fill-opacity:0;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-width:2" />
+	<line x1="140" y1="290" x2="140" y2="288" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<line x1="140" y1="261" x2="140" y2="240" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<line x1="115" y1="288" x2="115" y2="260" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<line x1="100" y1="260" x2="115" y2="260" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<line x1="122" y1="290" x2="122" y2="285" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:4" />
+	<line x1="122" y1="277" x2="122" y2="272" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:4" />
+	<line x1="122" y1="264" x2="122" y2="259" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:4" />
+	<line x1="122" y1="288" x2="140" y2="288" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<line x1="122" y1="261" x2="140" y2="261" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<line x1="140" y1="252" x2="150" y2="252" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<ellipse cx="140" cy="252" rx="2" ry="2" style="fill-opacity:1;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-width:2" />
+	<line x1="150" y1="274" x2="150" y2="252" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<line x1="122" y1="274" x2="150" y2="274" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<path d="M 125,274 L 129,271 L 129,277 L 125,274 L 127,272" style="fill-opacity:1;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<text x="360" y="255" style="font-family:Arial;font-size:12px;text-anchor:middle" dominant-baseline="baseline" transform="rotate(0, 360, 255)">Pin 5</text>
+	<line x1="360" y1="263" x2="360" y2="280" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<ellipse cx="360" cy="260" rx="3" ry="3" style="fill-opacity:0;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-width:2" />
+	<text x="330" y="235" style="font-family:Arial;font-size:12px;text-anchor:middle" dominant-baseline="baseline" transform="rotate(0, 330, 235)">5V Pin</text>
+	<line x1="330" y1="243" x2="330" y2="280" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<ellipse cx="330" cy="240" rx="3" ry="3" style="fill-opacity:0;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-width:2" />
+	<line x1="140" y1="360" x2="230" y2="360" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<line x1="230" y1="280" x2="230" y2="360" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<line x1="230" y1="280" x2="300" y2="280" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<rect x="280" y="310" width="100" height="40" style="fill-opacity:0;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-width:2" />
+	<line x1="360" y1="310" x2="360" y2="280" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<line x1="330" y1="310" x2="330" y2="280" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<line x1="300" y1="310" x2="300" y2="280" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<text x="300" y="330" style="font-family:Arial;font-size:11px;text-anchor:middle" dominant-baseline="middle" transform="rotate(0, 300, 330)">GND</text>
+	<text x="330" y="330" style="font-family:Arial;font-size:11px;text-anchor:middle" dominant-baseline="middle" transform="rotate(0, 330, 330)">VCC</text>
+	<text x="360" y="330" style="font-family:Arial;font-size:11px;text-anchor:middle" dominant-baseline="middle" transform="rotate(0, 360, 330)">DATA</text>
+	<path d="M 330,330 M 300,350 A 30,30 0 1 0 360,350" style="fill-opacity:0;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<path d="M 330,380 M 368,384 L 360,376 M 359,375 L 361,379 L 363,377 L 359,375 L 361,379" style="fill-opacity:0;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<path d="M 330,380 M 362,390 L 354,382 M 353,381 L 355,385 L 357,383 L 353,381 L 355,385" style="fill-opacity:0;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<line x1="140" y1="290" x2="140" y2="432" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<path d="M 132,432 L 148,432 L 140,440 L 132,432 Z" style="fill-opacity:0;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<line x1="140" y1="180" x2="140" y2="240" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<path d="M 140,217 M 132,217 L 148,217 M 140,217 L 148,202 L 132,202 L 140,217" style="fill-opacity:0;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<path d="M 140,215 M 151,213 L 159,221 M 160,222 L 158,218 L 156,220 L 160,222 L 158,218" style="fill-opacity:0;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<path d="M 140,215 M 144,219 L 152,227 M 153,228 L 151,224 L 149,226 L 153,228 L 151,224" style="fill-opacity:0;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<line x1="140" y1="120" x2="140" y2="190" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<path d="M 140,162 M 132,162 L 148,162 M 140,162 L 148,147 L 132,147 L 140,162" style="fill-opacity:0;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<path d="M 140,160 M 151,158 L 159,166 M 160,167 L 158,163 L 156,165 L 160,167 L 158,163" style="fill-opacity:0;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<path d="M 140,160 M 144,164 L 152,172 M 153,173 L 151,169 L 149,171 L 153,173 L 151,169" style="fill-opacity:0;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<line x1="140" y1="60" x2="140" y2="140" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<path d="M 140,107 M 132,107 L 148,107 M 140,107 L 148,92 L 132,92 L 140,107" style="fill-opacity:0;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<path d="M 140,105 M 151,103 L 159,111 M 160,112 L 158,108 L 156,110 L 160,112 L 158,108" style="fill-opacity:0;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<path d="M 140,105 M 144,109 L 152,117 M 153,118 L 151,114 L 149,116 L 153,118 L 151,114" style="fill-opacity:0;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<ellipse cx="140" cy="360" rx="2" ry="2" style="fill-opacity:1;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-width:2" />
+</svg>

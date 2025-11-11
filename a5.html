@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Kiefer Law's HCDE 439 Physical Computing Page!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/monokai.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async 
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+
+    <script>hljs.highlightAll();</script>
+  </head>
+  <body>
+    <h1>Kiefer Law's Assignment 5!</h1>
+    <div class="header">
+      <img src="A5 files\A5circuit.jpg" width="200" height="500"/>
+      <h2>Here is all the documentation for A5: Higher Voltage</h2>
+    </div>
+    <div class="body">
+      <br><h3>This is my arduino code (IR sensor doesn't really need a library so I added reactivity for frequent motion):</h3>
+      <pre><code class="language-cpp">
+        // pins for transistor and PIR sensor
+        const int sensor = 5;
+        const int led = 9;
+
+        int state = LOW; // for tracking of PIR
+        int currentTime; // time of current motion detection
+        int prevTime; // time of previous motion detection
+
+        void setup() {
+            // initialize pins and baud rate
+            pinMode(sensor, INPUT);
+            pinMode(led, OUTPUT);
+            Serial.begin(9600);
+
+        }
+
+        void loop() {
+        
+            state = digitalRead(sensor); // read PIR sensor
+            currentTime = millis(); // record time of detection for comparison after next detection
+
+            // LEDs light up for 3 seconds if motion has not been detected recently and flashes if motion has
+            //  recently been detected (about 10 seconds).
+            if (state == HIGH) {
+                if (currentTime - prevTime < 10000) {
+                Serial.println("pervasive motion detected");
+                for (int i = 0; i < 4; i++) {
+                    analogWrite(led, 50);
+                    delay(150);
+                    analogWrite(led, 0);
+                    delay(150);
+                }
+                prevTime = millis();
+                state = LOW;
+                
+                } else {
+                    prevTime = millis();
+                    Serial.println("motion detected");
+                    analogWrite(led, 50);
+                    delay(3000);
+                    state = LOW;
+                    analogWrite(led, 0);
+                }
+                
+
+            }
+
+        }
+
+    </code></pre>
+    <br><h3>Here are my circuit diagrams:</h3>
+      <img src="A5 files\A5diagram.svg" width="500" height="500" />
+      <p>The LED circuit has an input of 9V which drops a little bit while moving along the strip, and the IR sensor uses 5V input. I did not
+        use any calculations for my circuit because the LED strip and PIR sensor have built-in resistors. 
+      </p>
+    </div>
+    <br><h3>Here is a gif of my circuit in action:</h3>
+    <img src="A5 files\A5video.gif" width="300" height="500"/>
+    <pre><p>
+      questions to be answered:
+      1. The max amount of current between pins on the n-mosfet transistor is 37.2A according to the datasheet.
+
+      2. <img src="A5 files\q2circuit.svg" width="150" height="300" />
+      Here are datasheets I found for parts used in this circuit:
+        Capacitor: https://www.arduino.cc/documents/datasheets/cap100uF.pdf
+        DC motor: https://content.arduino.cc/assets/DCmotor.PDF
+        Diode: https://www.vishay.com/docs/88503/1n4001.pdf
+      3. <img src="A5 files\Screenshot 2025-11-10 231728.png" width="700" height="350" />
+        Code:
+        initialize each pin connected to L293D. 3 are for one motor and 3 are for the other motor.
+        Set pins connected to 2 & 10 on the L293D to high and the ones on pins 7 & 15 to low. 
+        This will make both motors spin the same direction. To reverse their direction, swap the high and low values.
+
+      4. I used this tutorial to try to figure out how to use the L293D since the datasheet schematic was
+        a bit confusing: https://lastminuteengineers.com/l293d-dc-motor-arduino-tutorial/. I am still not exactly sure
+        what all the gates do on the chip.
+        
+
+    </p></pre>
+    
+   
+
+  </body>
+</html>

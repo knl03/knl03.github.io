@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Circuit Diagram, cdlibrary.dll 4.0.0.0 -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" width="120" height="280" xmlns="http://www.w3.org/2000/svg">
+	<line x1="80" y1="210" x2="80" y2="242" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<path d="M 72,242 L 88,242 L 80,250 L 72,242 Z" style="fill-opacity:0;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<line x1="40" y1="160" x2="80" y2="160" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<line x1="40" y1="220" x2="80" y2="220" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<text x="80" y="35" style="font-family:Arial;font-size:12px;text-anchor:middle" dominant-baseline="baseline" transform="rotate(0, 80, 35)">5V Pin</text>
+	<line x1="80" y1="43" x2="80" y2="100" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<ellipse cx="80" cy="40" rx="3" ry="3" style="fill-opacity:0;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-width:2" />
+	<line x1="80" y1="80" x2="80" y2="116" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<line x1="80" y1="124" x2="80" y2="160" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<line x1="66" y1="116" x2="94" y2="116" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<line x1="66" y1="124" x2="94" y2="124" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<text x="60" y="120" style="font-family:Arial;font-size:11px;text-anchor:end" dominant-baseline="middle" transform="rotate(0, 60, 120)">100 µF</text>
+	<line x1="40" y1="220" x2="40" y2="160" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<path d="M 40,183 M 32,183 L 48,183 M 40,183 L 48,198 L 32,198 L 40,183" style="fill-opacity:0;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<line x1="80" y1="160" x2="80" y2="177" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<line x1="80" y1="203" x2="80" y2="220" style="stroke:rgb(0, 0, 0);stroke-linecap:square;stroke-width:2" />
+	<ellipse cx="80" cy="190" rx="12" ry="12" style="fill-opacity:0;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-width:2" />
+	<text x="80" y="190" style="font-family:Arial;font-size:12px;text-anchor:middle" dominant-baseline="middle" transform="rotate(0, 80, 190)">M</text>
+	<ellipse cx="80" cy="220" rx="2" ry="2" style="fill-opacity:1;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-width:2" />
+	<ellipse cx="80" cy="160" rx="2" ry="2" style="fill-opacity:1;fill:rgb(0, 0, 0);stroke:rgb(0, 0, 0);stroke-width:2" />
+</svg>
