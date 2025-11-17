@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Kiefer Law's HCDE 439 Physical Computing Page!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/monokai.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async 
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+
+    <script>hljs.highlightAll();</script>
+  </head>
+  <body>
+    <h1>Kiefer Law's Assignment 6!</h1>
+    <div class="header">
+      <img src="A6 files\A6circuit.jpg" width="200" height="500"/>
+      <h2>Here is all the documentation for A6: Talking to the Web</h2>
+    </div>
+    <p>
+        For this project I adapted a Snake game made in P5.js to be controlled using a joystick connected to an Arduino. I modified the existing
+        UI so it could be controlled by the directional and button inputs from the joystick. I added an LED to light up every time the snake eats a fruit.
+    </p>
+    <br><h3>Here is a gif of my circuit in action:</h3>
+    <img src="A6 files\A6 video.gif" width="300" height="500"/>
+    <div class="body">
+      <br><h3>This is my arduino code:</h3>
+      <pre><code class="language-cpp">
+        #define VRX_PIN  A1 // Arduino pin connected to VRX pin
+        #define VRY_PIN  A0 // Arduino pin connected to VRY pin
+        #define button_pin A2 
+
+
+        int xValue = 0; // To store value of the X axis
+        int yValue = 0; // To store value of the Y axis
+        int start; // start of time since LED on
+        int time; // for storing millis() time
+
+
+        void setup() {
+        Serial.begin(9600);
+        pinMode(button_pin, INPUT_PULLUP); // uses internal pull-up resistor
+        pinMode(13, OUTPUT); // Pin 13 for LED control
+        }
+
+        void loop() {
+        // track time since program started
+        time = millis();
+
+        // read analog X and Y analog values
+        xValue = analogRead(VRX_PIN);
+        yValue = analogRead(VRY_PIN);
+        
+        if (Serial.available() > 0) {   // if there's serial data 
+            int inByte = Serial.read(); // read it
+        
+            if (inByte == 115) { // ASCII 's' 
+            start = time;
+            }
+            
+        }
+            // turn on LED for 750 milliseconds after 's' received
+        if (time - start < 750) {
+            digitalWrite(13, HIGH);
+        } else {
+            digitalWrite(13, LOW);
+        }
+        
+        // print data to Serial Monitor on Arduino IDE
+        //Serial.print("x = ");
+        // Serial.print(xValue);
+        //Serial.print(", y = ");
+        //Serial.println(yValue);
+
+        // send 'pressed' when button is pressed
+        if (digitalRead(button_pin) == LOW) {
+            Serial.println("pressed");
+        }
+        
+
+        // elif statements to prevent double inputs of left-up, etc.
+        // Value ranges are somewhat arbitrary but are far enough from the median of about 500 to prevent
+        // accidental inputs.
+        if (xValue > 700) {
+            Serial.println("left");
+        }
+        else if (xValue < 300) {
+            Serial.println("right");
+        }
+        else if (yValue > 700) {
+            Serial.println("up");
+        }
+        else if (yValue < 300) {
+            Serial.println("down");
+        }
+        delay(50);
+        }
+    </code></pre>
+    <br><h3>This is my JS code:</h3>
+    <pre><code class="language-javascript">
+        const BAUD_RATE = 9600; // This should match the baud rate in your Arduino sketch
+
+        let port, connectBtn; // Declare global variables
+
+        // These variables scale the game relative to the canvas
+        let gridWidth = 30;
+        let gridHeight = 30;
+
+        let gameStarted = false;
+
+        // How many segments snake starts with
+        let startingSegments = 10;
+
+        // Starting coordinates for first segment
+        let xStart = 0;
+        let yStart = 15;
+
+        // Starting direction of motion
+        let startDirection = 'right';
+
+        // Current direction of motion
+        let direction = startDirection;
+
+        // The snake is divided into small segments,
+        // stored as vectors in this array
+        let segments = [];
+
+        let score = 0;
+        let highScore;
+
+        // The fruit's position is stored as a vector
+        // in this variable
+        let fruit;
+
+        function setup() {
+        setupSerial(); // Run our serial setup function (below)
+
+        createCanvas(750, 750); 
+
+        // Adjust frame rate to set movement speed
+        frameRate(10);
+
+        textAlign(CENTER, CENTER);
+        textSize(2);
+
+        // Check for saved high score in local browser storage
+        // If no score has been stored, this will be undefined
+        highScore = getItem('high score');
+
+        describe(
+            'A reproduction of the arcade game Snake, in which a snake, represented by a green line on a black background, is controlled by the arrow keys. Users move the snake toward a fruit, represented by a red dot, but the snake must not hit the sides of the window or itself.'
+        );
+        }
+
+        function draw() {
+        background(0);
+
+        const portIsOpen = checkPort(); // Check whether the port is open (see checkPort function below)
+        if (!portIsOpen) return; // If the port is not open, exit the draw loop
+
+        joystickDirection();
+
+        // Set scale so that the game grid fills canvas
+        scale(width / gridWidth, height / gridHeight);
+        if (gameStarted === false) {
+            showStartScreen();
+            buttonPressed();
+        } else {
+            // Shift over so that snake and fruit are still on screen
+            // when their coordinates are 0
+            translate(0.5, 0.5);
+            showFruit();
+            showSegments();
+            updateSegments();
+            checkForCollision();
+            checkForFruit();
+            displayScore();
+        }
+        }
+
+        // Prints the current score and high score in transparent text at top of screen
+        function displayScore() {
+            noStroke();
+            fill(173, 216, 230, 128);
+            text(`Score: ${score}  High Score: ${highScore}`, gridWidth / 2, 5);
+        }
+
+        // Start screen display
+        function showStartScreen() {
+        noStroke();
+        fill(32);
+        rect(2, gridHeight / 2 - 5, gridWidth - 4, 10, 2);
+        fill(135, 230, 110);
+        text(
+            '*Tap joystick to begin*\nHigh score: ' + highScore + '\nGood luck!',
+            gridWidth / 2,
+            gridHeight / 2
+        );
+        }
+
+        // Check for joystick button press to start game
+        function buttonPressed() {
+            let str = port.readUntil("\n");  
+            if (!str || str.length === 0) return; // Nothing read, exit
+
+            // Clean up the string
+            str = str.trim().toLowerCase(); // normalize case
+            console.log(str);
+
+            if (gameStarted === false && str === "pressed") {
+                startGame();
+            }
+        }
+
+        function startGame() {
+        // Put the fruit in a random place
+        updateFruitCoordinates();
+
+        // Start with an empty array for segments
+        segments = [];
+
+        // Start with x at the starting position and repeat until specified
+        // number of segments have been created, increasing x by 1 each time
+        for (let x = xStart; x < xStart + startingSegments; x += 1) {
+            // Create a new vector at the current position
+            let segmentPosition = createVector(x, yStart);
+
+            // Add it to the beginning of the array
+            segments.unshift(segmentPosition);
+        }
+
+        direction = startDirection;
+        score = 0;
+        gameStarted = true;
+        loop();
+        }
+
+        function showFruit() {
+        stroke(255, 64, 32);
+        point(fruit.x, fruit.y);
+        }
+
+        function showSegments() {
+        noFill();
+        stroke(96, 255, 64);
+        beginShape();
+        for (let segment of segments) {
+            vertex(segment.x, segment.y);
+        }
+        endShape();
+        }
+
+        function updateSegments() {
+        // Remove last segment
+        segments.pop();
+
+        // Copy current head of snake
+        let head = segments[0].copy();
+
+        // Insert the new snake head at the beginning of the array
+        segments.unshift(head);
+
+        // Adjust the head's position based on the current direction
+        switch (direction) {
+            case 'right':
+            head.x = head.x + 1;
+            break;
+            case 'up':
+            head.y = head.y - 1;
+            break;
+            case 'left':
+            head.x = head.x - 1;
+            break;
+            case 'down':
+            head.y = head.y + 1;
+            break;
+        }
+        }
+
+        function checkForCollision() {
+        // Store first segment in array as head
+        let head = segments[0];
+
+        // If snake's head...
+        if (
+            // hit right edge or
+            head.x >= gridWidth ||
+            // hit left edge or
+            head.x < 0 ||
+            // hit bottom edge or
+            head.y >= gridHeight ||
+            // hit top edge or
+            head.y < 0 ||
+            // collided with itself
+            selfColliding() === true
+        ) {
+            // show game over screen
+            gameOver();
+        }
+        }
+
+        function gameOver() {
+
+        // Set high score to whichever is larger: current score or previous
+        // high score
+        highScore = max(score, highScore);
+
+        // Put high score in local storage. This will be be stored in browser
+        // data, even after the user reloads the page.
+        storeItem('high score', highScore);
+        gameStarted = false;
+        }
+
+        function selfColliding() {
+        // Store the last segment as head
+        let head = segments[0];
+
+        // Store every segment except the first
+        let segmentsAfterHead = segments.slice(1);
+
+        // Check each of the other segments
+        for (let segment of segmentsAfterHead) {
+            // If segment is in the same place as head
+            if (segment.equals(head) === true) {
+            return true;
+            }
+        }
+        return false;
+        }
+
+        function checkForFruit() {
+        // Store first segment as head
+        let head = segments[0];
+
+        // If the head segment is in the same place as the fruit
+        if (head.equals(fruit) === true) {
+            // Give player a point
+            port.write('s');
+            score = score + 1;
+            
+
+            // Duplicate the tail segment
+            let tail = segments[segments.length - 1];
+            let newSegment = tail.copy();
+
+            // Put the duplicate in the beginning of the array
+            segments.push(newSegment);
+
+            // Reset fruit to a new location
+            updateFruitCoordinates();
+        }
+        }
+
+        function updateFruitCoordinates() {
+        // Pick a random new coordinate for the fruit
+        // and round it down using floor().
+        // Because the segments move in increments of 1,
+        // in order for the snake to hit the same position
+        // as the fruit, the fruit's coordinates must be
+        // integers, but random() returns a float
+        let x = floor(random(gridWidth));
+        let y = floor(random(gridHeight));
+        fruit = createVector(x, y);
+        }
+
+        // Mapping joystick directions to direction for snake. Ignoring inputs that are the opposite of current direction.
+        function joystickDirection() {
+        // Read a line from the serial port
+        let str = port.readUntil("\n");  
+        if (!str || str.length === 0) return; // Nothing read, exit
+
+        // Clean up the string
+        str = str.trim().toLowerCase(); // normalize case
+        console.log(str);
+
+        // Switch on the serial input instead of keyCode
+        switch (str) {
+            case "left":
+            if (direction !== "right") {
+                direction = "left";
+            }
+            break;
+            case "right":
+            if (direction !== "left") {
+                direction = "right";
+            }
+            break;
+            case "up":
+            if (direction !== "down") {
+                direction = "up";
+            }
+            break;
+            case "down":
+            if (direction !== "up") {
+                direction = "down";
+            }
+            break;
+        }
+        }
+
+        // Setup connection to Arduino for data exchange
+        function setupSerial() {
+        port = createSerial();
+
+        // Check to see if there are any ports we have used previously
+        let usedPorts = usedSerialPorts();
+        if (usedPorts.length > 0) {
+            // If there are ports we've used, open the first one
+            port.open(usedPorts[0], BAUD_RATE);
+        }
+
+        // create a connect button
+        connectBtn = createButton("Connect to Arduino");
+        connectBtn.position(window.innerWidth / 2, 5); // Position the button in the top left of the screen.
+        connectBtn.mouseClicked(onConnectButtonClicked); // When the button is clicked, run the onConnectButtonClicked function
+        }
+
+        // check if port is connected
+        function checkPort() {
+        if (!port.opened()) {
+            // If the port is not open, change button text
+            connectBtn.html("Connect to Arduino");
+            // Set background to gray
+            background("gray");
+            return false;
+        } else {
+            // Otherwise we are connected
+            connectBtn.html("Disconnect");
+            return true;
+        }
+        }
+
+        // controlling port with digital button
+        function onConnectButtonClicked() {
+        // When the connect button is clicked
+        if (!port.opened()) {
+            // If the port is not opened, we open it
+            port.open(BAUD_RATE);
+        } else {
+            // Otherwise, we close it!
+            port.close();
+        }
+        }
+    
+    </code></pre>
+    <br><h3>This is my HTML code:</h3>
+    <pre><code class="language-html">
+        &lt;!DOCTYPE html&gt;
+        &lt;html lang="en"&gt;
+        &lt;head&gt;
+            &lt;meta charset="UTF-8" /&gt;
+            &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+            &lt;script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"&gt;&lt;/script&gt;
+            &lt;script src="https://unpkg.com/@gohai/p5.webserial@^1/libraries/p5.webserial.js"&gt;&lt;/script&gt;
+            &lt;title&gt;Arduino Snake Game&lt;/title&gt;
+            &lt;style&gt;
+                html, body {
+                    padding: 0;
+                    margin: 0;
+                    overflow: hidden;
+                }
+                canvas {
+                    display: block;
+                }
+            &lt;/style&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+            &lt;script src="index.js"&gt;&lt;/script&gt;
+        &lt;/body&gt;
+        &lt;/html&gt;
+
+
+    </code></pre>
+    <br><h3>Here is my circuit diagram:</h3>
+      <img src="A6 files\A6diagram.png" width="800" height="500" />
+      <h2>Red LED resistor calculation:</h2>
+      <div>
+        \[
+        5 - 1.8 = 0.02 \cdot \Omega 
+        \]
+        \[
+        \frac{3.2}{0.02} = \frac{0.02 \cdot \Omega}{0.02}
+        \]
+        \[
+        160 = \Omega
+        \]
+      </div>
+      <p> I chose a 220Ω resistor for the red LED since that was the closest available. The button in the joystick uses the internal pull-up resistor on the Arduino.</p>
+    </div>
+
+    <pre><p>
+      Credits:
+
+      I adapted the code from this snake game example on the P5.js website to work with joystick input:
+      <a href="https://p5js.org/examples/games-snake/">https://p5js.org/examples/games-snake/</a>
+
+      
+
+      I used this tutorial for help setting up the joystick with Arduino:
+      <a href="https://arduinogetstarted.com/tutorials/arduino-joystick">https://arduinogetstarted.com/tutorials/arduino-joystick</a>
+
+    </p></pre>
+  </body>
+</html>
