@@ -54,11 +54,9 @@
     <!-- 2. Description -->
     <section id="description" aria-labelledby="desc-heading">
         <h2 id="desc-heading">What is it?</h2>
-        <p>I made this project to help me get to the bus on time. Instead of having to frequently get my phone out 
-            and check Apple Maps I can instead glance at this display which shows me the next scheduled bus as well as 
-            the current time. When the bus is 5 minutes away, 4 red LEDs blink to alert me to get ready. This project was 
-            created for HCDE 439 Physical Computing at the University of Washington.</p>
-        </p>
+        <p>This project was created for HCDE 439 Physical Computing at the University of Washington.</p>
+        <p>I designed it to help me get to the bus on time. It works by blinking four LED lights when the bus is five minutes away. </p>
+        <p>Instead of having to get my phone out and check Apple Maps frequently, I can glance at this display, which shows the next scheduled bus and the current time.</p>
     </section>
 
     <!-- 3. Demo video -->
@@ -390,19 +388,16 @@ Arrivals findNextSun(int hour, int minute) {
                 <li>Cardboard, 18x9x9in box</li>
             </ul>
             <h3>Circuit Description</h3>
-            <p>The circuit consists of an Arduino Uno connected to a DS1307 RTC module and an LCD1602 display module. 
-                The RTC needs to be programmed with the current time when the code is uploaded. Time can be edited in the code.
-                Four red LEDs are connected to digital pins 7-10 through 220Ω resistors, which serves as the blinking 5 minute alert. 
-                A 10k potentiometer is used to adjust the contrast of the LCD display. 
-                The entire setup can be powered by connecting the Arduino board to power. I used a 9V outlet adapter.
+            <p>The circuit consists of an Arduino Uno connected to a DS1307 RTC module and an LCD1602 display module. The entire setup can be powered by connecting the Arduino board to the 9V outlet adapter.
+                The RTC needs to be programmed with the current time when the code is uploaded. The time can be edited in the code.
+                Four red LEDs are connected to digital pins 7-10 through 220&Omega; resistors, which serve as the blinking 5-minute alert. The contrast of the LCD Display is adjusted using a 10k potentiometer.
             </p>
             <h3>Code Explanation</h3>
-            <p>The code is written in C++ using the Arduino IDE. Install the "LiquidCrystal.h" and "uRTCLib.h" libraries. <br><br> 
-                To have access to estimated arrival times for my bus stop,
-                I hard coded the arrival times for the southbound bus. 
-                I also included northbound but did not create functions for that direction. In the loop function, the code alternates between printing 
-                to the LCD and determing time using the RTC. First the real time is printed and then the next arrival is determined using
-                the findNext functions, which return the next arrival times from the Arrivals object. See inline comments for more details.
+            <p>The code is written in C++ using the Arduino IDE. Install the "LiquidCrystal.h" and "uRTCLib.h" libraries. </p>
+            <p>To access the estimated arrival times for the bus stop, l hard-coded the arrival times for the southbound bus. I also included times for the northbound bus, but did not create functions for that direction.
+            In the loop function, the code alternates between printing to the LCD and determining time using the RTC.
+            First, the real time is printed, and then the next arrival is determined using the findNext functions, which return the next arrival times from the Arrivals object.</p>
+            <p>*See inline comments for more details.</p>
         </div>
     </section>
 
@@ -410,16 +405,27 @@ Arrivals findNextSun(int hour, int minute) {
     <section id="further-development" aria-labelledby="future-heading">
         <h2 id="future-heading">Further Development</h2>
         <ul>
-            <li>Simplify my code by creating one function that determines what day it is and then determines what the nearest arrival is rather
-                than have separate functions for weekday, saturday, and sunday. I also would probably store time in minutes and then convert to 
-                hh:mm to print. It is much harder to work with hours and minutes separately. 
-            </li>
+            <li>Simplify the code by creating one function that determines what day it is and then determines what the nearest arrival is rather than having separate functions for weekdays, Saturday, and Sunday. </li>
+            <li>Store time in minutes and then convert to hh:mm to print.</li>
+              <ul>
+                <li> It is much harder to work with hours and minutes separately. </li>
+              </ul>
+            
             <li>Use a 3.3V to 5V level shifter to connect an ESP32 microcontroller to the Arduino. 
+              <ul> 
+                <li>  
                 This could replace the RTC and provide updated time without having to manually reset the RTC when power is disconnected.
+                </li> 
+              </ul>
             </li>
             <li>Obtain OneBusAway API key and implement live bus arrival times using ESP32 with a Python script.
             </li>
-            <li>Upgrade LCD to a large LED matrix (~64x32) to display on larger screen, allowing for more information such as weather and additional later arrivals.
+            <li>Upgrade LCD to a large LED matrix (~64x32) to display on a larger screen.
+              <ul>  
+                <li>  
+                  This allows for more information such as weather and additional later arrivals.
+                </li>
+              </ul>
             </li>
 
         </ul>
