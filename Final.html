@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Project Title</title>
+    <meta name="description" content="Short project description" />
+
+    <!-- Minimal styling -->
+    <style>
+        body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; line-height:1.5; margin:16px auto; max-width:900px; }
+        section { margin-bottom:28px; }
+        h1,h2 { margin:8px 0; }
+        video, img { max-width:100%; height:auto; display:block; }
+        pre { background:#0b0b0b; color:#e6e6e6; padding:12px; overflow:auto; border-radius:6px; }
+        code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace; }
+        figure { margin:0; }
+        figcaption { font-size:.9rem; color:#555; margin-top:6px; }
+        #circuit-image img { transform: scale(2) rotate(-90deg); }
+        /* Small fixed back button */
+        .back-button {
+          position:fixed;
+          top:16px;
+          left:16px;
+          background:#fff;
+          color:#111;
+          text-decoration:none;
+          padding:6px 10px;
+          border-radius:6px;
+          box-shadow:0 1px 4px rgba(0,0,0,0.15);
+          font-size:.9rem;
+          z-index:1000;
+          border:1px solid #ddd;
+          display:inline-flex;
+          align-items:center;
+        }
+        .back-button:hover { background:#f5f5f5; }
+        .back-button:focus { outline:3px solid #9fd3ff; outline-offset:2px; }
+    </style>
+
+    <!-- Optional: highlight.js for code highlighting (CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>window.addEventListener('load', ()=>hljs.highlightAll());</script>
+</head>
+<body>
+  <a href="index.html" class="back-button" aria-label="Back to index">← Back</a>
+    <!-- 1. Title -->
+    <section id="title" aria-labelledby="page-title">
+        <h1 id="page-title">BusCatcher 3000</h1>
+        <p class="lead">HCDE 439 Final Project</p>
+    </section>
+
+    <!-- 2. Description -->
+    <section id="description" aria-labelledby="desc-heading">
+        <h2 id="desc-heading">What is it?</h2>
+        <p>I made this project to help me get to the bus on time. Instead of having to frequently get my phone out 
+            and check Apple Maps I can instead glance at this display which shows me the next scheduled bus as well as 
+            the current time. When the bus is 5 minutes away, 4 red LEDs blink to alert me to get ready. This project was 
+            created for HCDE 439 Physical Computing at the University of Washington.</p>
+        </p>
+    </section>
+
+    <!-- 3. Demo video -->
+    <section id="demo-video" aria-labelledby="video-heading">
+        <h2 id="video-heading">Demo Video</h2>
+        <video controls aria-label="Project demo video" poster="FinalProjFiles\Prototype.png">
+            <source src="FinalProjFiles\DemoVid.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <figcaption>Example of 5 minute alert and clock turnover to nearest arrival.</figcaption>
+    </section>
+
+    <!-- 4. Circuit image -->
+    <section id="circuit-image" aria-labelledby="circuit-image-heading">
+        <h2 id="circuit-image-heading">Circuit Image</h2>
+        <figure>
+            <img src="FinalProjFiles\ArduinoCircuit.jpg" alt="Top-down photo of assembled circuit" width="400" height="1000" style="transform:rotate(-90deg);">
+            <figcaption>Photo of the assembled prototype.</figcaption>
+        </figure>
+    </section>
+
+    <!-- 5. Circuit diagram -->
+    <section id="circuit-diagram" aria-labelledby="circuit-diagram-heading">
+        <h2 id="circuit-diagram-heading">Circuit Diagram</h2>
+        <figure>
+            <img src="FinalProjFiles\439 final circuit diagram.svg" alt="Schematic diagram showing component connections">
+            <figcaption>Annotated schematic.</figcaption>
+        </figure>
+    </section>
+
+    <!-- 6. Code (C++) -->
+    <section id="code-cpp" aria-labelledby="code-heading">
+        <h2 id="code-heading">Code (C++)</h2>
+        <pre><code class="language-cpp">
+// These are the tutorials I used to setup the LCD and RTC:
+// LCD -> https://docs.arduino.cc/learn/electronics/lcd-displays/
+// RTC -> https://lastminuteengineers.com/ds1307-rtc-arduino-tutorial/
+
+// include the library code:
+#include &ltLiquidCrystal.h>
+#include &ltuRTCLib.h>
+
+// a data type to store hour and minute values for time. 
+struct Arrivals {
+  int hour;
+  int minute;
+};
+
+// SB arrivals (to campus) for the bus stop near my house. Obtained from the OneBusAway website.
+Arrivals mfSB[] = {
+  {5,45},{6,17},{6,31},{6,47},{7,5},{7,22},{7,29},{7,39},{7,44},{7,54},{7,58},
+  {8,8},{8,13},{8,23},{8,28},{8,39},{8,43},{8,54},{8,59},{9,9},{9,13},{9,24},
+  {9,28},{9,39},{9,42},{9,53},{9,58},{10,8},{10,13},{10,31},{10,46},{11,0},{11,15},
+  {11,30},{11,45},{11,58},{12,13},{12,27},{12,42},{12,57},{13,12},{13,29},{13,44},{13,58},
+  {14,13},{14,28},{14,43},{14,59},{15,15},{15,26},{15,41},{15,58},{16,12},{16,27},{16,43},
+  {16,58},{17,12},{17,27},{17,43},{17,54},{18,11},{18,26},{18,41},{18,58},{19,12},{19,28},
+  {19,42},{20,13},{20,46},{21,15},{21,43},{22,12},{22,40},{23,10},{23,38},{0,23}
+};
+
+Arrivals satSB[] = {
+  {6,28},{6,58},{7,27},{7,42},{7,57},{8,12},{8,27},{8,42},{8,56},{9,11},
+  {9,26},{9,41},{9,56},{10,11},{10,26},{10,41},{10,56},{11,10},{11,25},{11,40},
+  {11,55},{12,10},{12,25},{12,40},{12,55},{13,10},{13,25},{13,40},{13,55},{14,10},
+  {14,24},{14,40},{14,55},{15,10},{15,25},{15,40},{15,54},{16,10},{16,25},{16,40},
+  {16,55},{17,10},{17,24},{17,40},{17,55},{18,10},{18,25},{18,41},{18,56},{19,11},
+  {19,26},{19,56},{20,26},{20,57},{21,27},{21,57},{22,27},{22,57},{23,27},{23,58},
+  {0,25}
+};
+
+Arrivals sunSB[] = {
+  {6,26},{6,56},{7,26},{7,41},{7,56},{8,11},{8,26},{8,41},{8,56},{9,9},
+  {9,24},{9,39},{9,54},{10,9},{10,24},{10,39},{10,54},{11,9},{11,24},{11,39},
+  {11,54},{12,9},{12,24},{12,39},{12,54},{13,9},{13,24},{13,39},{13,54},{14,9},
+  {14,24},{14,39},{14,54},{15,9},{15,24},{15,39},{15,54},{16,8},{16,23},{16,38},
+  {16,53},{17,8},{17,23},{17,40},{17,55},{18,10},{18,25},{18,41},{18,56},{19,10},
+  {19,26},{19,56},{20,26},{20,56},{21,27},{21,57},{22,27},{22,57},{23,27},{23,57},
+  {0,27}
+};
+
+// I did not implement the NB arrivals into this code. If i were to add them in I would rework the code to be one
+// nextArrival function that takes an argument for NB or SB (perhaps from button input) and then determine the day 
+// within the function (or pass as argument).
+
+// Arrivals mfNB[] = {
+//   {6,32},{6,47},{7,3},{7,18},{7,33},{7,48},{8,3},{8,18},{8,33},{8,48},
+//   {9,3},{9,18},{9,33},{9,48},{10,3},{10,18},{10,33},{10,48},{11,3},{11,18},
+//   {11,33},{11,49},{12,4},{12,19},{12,34},{12,49},{13,4},{13,19},{13,34},{13,49},
+//   {2,4},{2,19},{2,35},{2,50},{3,6},{3,21},{3,29},{3,37},{3,45},{3,53},
+//   {4,1},{4,9},{4,19},{4,30},{4,41},{4,52},{5,3},{5,14},{5,24},{5,35},
+//   {5,44},{5,54},{6,4},{6,14},{6,23},{6,33},{6,43},{6,53},{7,3},{7,18},
+//   {7,34},{7,50},{8,5},{8,20},{8,35},{9,5},{9,35},{10,4},{10,31},{10,59},
+//   {11,24},{11,54},{0,24},{1,9}
+// };
+
+// Arrivals satNB[] = {
+//   {6,50},{7,20},{7,36},{7,50},{8,5},{8,20},{8,35},{8,50},{9,5},{9,20},
+//   {9,35},{9,50},{10,6},{10,21},{10,36},{10,51},{11,6},{11,21},{11,36},{11,51},
+//   {12,6},{12,22},{12,38},{12,53},{13,8},{13,23},{13,38},{13,54},{14,9},{14,24},
+//   {14,39},{14,53},{15,9},{15,24},{15,39},{15,54},{16,9},{16,23},{16,39},{16,54},
+//   {17,8},{17,23},{17,38},{17,52},{18,8},{18,23},{18,38},{18,52},{19,7},{19,22},
+//   {19,52},{20,22},{20,50},{21,20},{21,50},{22,20},{22,50},{23,20},{23,50},{0,20},
+//   {0,47}
+// };
+
+// Arrivals sunNB[] = {
+//   {6,50},{7,20},{7,35},{7,50},{8,6},{8,21},{8,36},{8,51},{9,6},
+//   {9,21},{9,36},{9,52},{10,7},{10,22},{10,37},{10,52},{11,7},{11,22},{11,37},
+//   {11,52},{12,7},{12,22},{12,37},{12,52},{13,7},{13,23},{13,38},{13,53},{14,8},
+//   {14,23},{14,38},{14,53},{15,8},{15,23},{15,38},{15,53},{16,8},{16,23},{16,38},
+//   {16,53},{17,8},{17,23},{17,38},{17,53},{18,8},{18,23},{18,38},{18,53},{19,8},
+//   {19,23},{19,52},{20,21},{20,51},{21,21},{21,50},{22,20},{22,50},{23,20},{23,50},
+//   {0,20},{0,50}
+// };
+
+// uRTCLib rtc;
+uRTCLib rtc(0x68);
+
+char daysOfTheWeek[7][12] = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+
+
+// initialize the library by associating any needed LCD interface pin
+// with the arduino pin number it is connected to
+const int rs = 12, en = 11, d4 = 2, d5 = 3, d6 = 4, d7 = 5, L1 = 7, L2 = 8, L3 = 9, L4 = 10;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
+
+
+void setup() {
+  
+  Serial.begin(9600); // baud rate  
+
+  URTCLIB_WIRE.begin();
+
+  lcd.begin(16, 2); // set up the LCD's number of columns and rows:
+  
+  rtc.set(0, 33, 8, 3, 2, 12, 25); // (second, minute, hour, dayOfWeek, dayOfMonth, month, year)
+  
+  lcd.print("Next bus: "); // set static text on screen
+
+  pinMode(L1, OUTPUT); // initalize pins for LEDs
+  pinMode(L2, OUTPUT);
+  pinMode(L3, OUTPUT);
+  pinMode(L4, OUTPUT);
+
+}
+
+void loop() {
+
+  lcd.setCursor(14,1); // move cursor to bottom right
+  lcd.print("SB"); // bus direction
+
+  // **Print RTC information to serial monitor**
+  // Serial.print("Current Date & Time: ");
+  // Serial.print(rtc.year());
+  // Serial.print('/');
+  // Serial.print(rtc.month());
+  // Serial.print('/');
+  // Serial.print(rtc.day());
+
+  // Serial.print(" (");
+  // Serial.print(daysOfTheWeek[rtc.dayOfWeek() - 1]);
+  // Serial.print(") ");
+
+  // Serial.print(rtc.hour());
+  // Serial.print(':');
+  // Serial.print(rtc.minute());
+  // Serial.print(':');
+  // Serial.println(rtc.second());
+ 
+  rtc.refresh();
+
+  int hour = rtc.hour(); // get current hour
+  int minute = rtc.minute(); // get current minute
+
+  lcd.setCursor(10,0); // set cursor middle top
+  char time[6];  // to store in hh:mm format
+  Arrivals nearest = {0,0}; // initalize to store next arrival time
+  if (rtc.dayOfWeek() == 1) { // if Sunday
+    nearest = findNextSun(hour, minute);
+  } else if (rtc.dayOfWeek() == 7) { // if Saturday
+    nearest = findNextSat(hour, minute);
+  } else { // weekdays
+    nearest = findNextMF(hour, minute);
+  }
+  sprintf(time, "%02d:%02d", nearest.hour, nearest.minute);
+  lcd.print(time); // print arrival time to LCD
+  
+  Serial.print("Next bus at: "); // print next arrival to serial monitor
+  Serial.println(time);
+
+
+  lcd.setCursor(0, 1); // move cursor to bottom left
+  lcd.print("Time: ");
+
+  
+  char currentTime[6];  // to store in hh:mm format
+  sprintf(currentTime, "%02d:%02d", rtc.hour(), rtc.minute());
+
+  Serial.print("Current Time: "); // current time to serial monitor
+  Serial.println(currentTime);
+
+  lcd.setCursor(6,1); // set cursor middle bottom
+  lcd.print(currentTime); // print current time to LCD
+
+
+  // Blink 4 red LEDs on/off (1s intervals) for 1 minute starting 5 minutes before the next bus arrival.
+  // Will not trigger if the turnover between two arrivals is less than 5 minutes. E.g 7:40 -> 7:43, will not trigger
+  // a 7:38 alert.
+  if ((nearest.hour * 60 + nearest.minute) - (rtc.hour() * 60 + rtc.minute()) == 5) { 
+    if ((millis() / 1000) % 2 == 0) {
+      digitalWrite(L1, HIGH);
+      digitalWrite(L2, HIGH);
+      digitalWrite(L3, HIGH);
+      digitalWrite(L4, HIGH);
+    } else {
+      digitalWrite(L1, LOW);
+      digitalWrite(L2, LOW);
+      digitalWrite(L3, LOW);
+      digitalWrite(L4, LOW);
+    }
+  }
+
+  delay(1000); // wait 1 second
+  
+}
+
+// determine next arrival based on weekday arrival times. 
+Arrivals findNextMF(int hour, int minute) {
+  Arrivals nearest = {0,0}; // initalize to store return value
+  for (int i = 0; i < sizeof(mfSB) / sizeof(mfSB[0]); i++) { // for length of arrivals
+    // Serial.println(mfSB[i].hour);
+    if (mfSB[i].hour < hour) { // skip past arrivals
+      continue;
+    } else if (mfSB[i].hour == hour){
+      if (mfSB[i].minute < minute) { // skip past arrivals within the hour
+        continue;
+      } else {
+        nearest.hour = mfSB[i].hour;  // arrival hour
+        nearest.minute = mfSB[i].minute; // arrival minute
+        return nearest; // arrival time
+      }
+    } else { // check the next item in arrivals in case the next arrival is in the 
+        next standard hour (E.g. checking 0700 but next is arrival is 0805)
+      if (i < sizeof(mfSB) / sizeof(mfSB[0])) { // check not at end of arrivals
+        nearest.hour = mfSB[i].hour;
+        nearest.minute = mfSB[i].minute;
+        return nearest; // arrival time
+      } else {
+        Serial.println("No more arrivals for the day");
+        break;
+      }
+    }
+  }
+}
+
+// Same as the weekday function but uses the Saturday arrivals data.
+Arrivals findNextSat(int hour, int minute) {
+  Arrivals nearest = {0,0};
+  for (int i = 0; i < sizeof(satSB) / sizeof(satSB[0]); i++) {
+    if (satSB[i].hour < hour) {
+      continue;
+    } else if (satSB[i].hour == hour){
+      if (satSB[i].minute < minute) {
+        continue;
+      } else {
+        nearest.hour = satSB[i].hour;
+        nearest.minute = satSB[i].minute;
+      }
+    } else {
+      if (i < sizeof(satSB) / sizeof(satSB[0])) {
+        nearest.hour = satSB[i].hour;
+        nearest.minute = satSB[i].minute;
+        Serial.println("Nearest arrival found:");
+        Serial.print("Next bus at: " + String(nearest.hour) + ":" + String(nearest.minute));
+        break;
+      } else {
+        Serial.println("No more arrivals for the day");
+      break;
+      }
+    }
+  }   
+}
+
+// Same as the weekday function but uses the Sunday arrivals data.
+Arrivals findNextSun(int hour, int minute) {
+  Arrivals nearest = {0,0};
+  for (int i = 0; i < sizeof(sunSB) / sizeof(sunSB[0]); i++) {
+    if (sunSB[i].hour < hour) {
+      continue;
+    } else if (sunSB[i].hour == hour){
+      if (sunSB[i].minute < minute) {
+        continue;
+      } else {
+        nearest.hour = sunSB[i].hour;
+        nearest.minute = sunSB[i].minute;
+      }
+    } else {
+      if (i < sizeof(sunSB) / sizeof(sunSB[0])) {
+        nearest.hour = sunSB[i].hour;
+        nearest.minute = sunSB[i].minute;
+        Serial.println("Nearest arrival found:");
+        Serial.print("Next bus at: " + String(nearest.hour) + ":" + String(nearest.minute));
+        break;
+      } else {
+        Serial.println("No more arrivals for the day");
+        break;
+      }
+    }
+  }
+}
+
+        </code></pre>
+    </section>
+
+    <!-- 7. Detailed explanation -->
+    <section id="detailed-explanation" aria-labelledby="details-heading">
+        <h2 id="details-heading">Technical Implementation</h2>
+        <div>
+            <h3>Hardware Components</h3>
+            <ul>
+                <li>Arduino Uno R3</li>
+                <li>Breadboard</li>
+                <li>DS1307 RTC Module</li>
+                <li>LCD1602 Display Module</li>
+                <li>4 Red LEDs</li>
+                <li>Resistors ( 4-220Ω, 1-10kΩ)</li>
+                <li>23 Jumper Wires, 19 Prototyping Wires</li>
+                <li>10k Potentiometer</li>
+                <li>Cardboard, 18x9x9in box</li>
+            </ul>
+            <h3>Circuit Description</h3>
+            <p>The circuit consists of an Arduino Uno connected to a DS1307 RTC module and an LCD1602 display module. 
+                The RTC needs to be programmed with the current time when the code is uploaded. Time can be edited in the code.
+                Four red LEDs are connected to digital pins 7-10 through 220Ω resistors, which serves as the blinking 5 minute alert. 
+                A 10k potentiometer is used to adjust the contrast of the LCD display. 
+                The entire setup can be powered by connecting the Arduino board to power. I used a 9V outlet adapter.
+            </p>
+            <h3>Code Explanation</h3>
+            <p>The code is written in C++ using the Arduino IDE. Install the "LiquidCrystal.h" and "uRTCLib.h" libraries. <br><br> 
+                To have access to estimated arrival times for my bus stop,
+                I hard coded the arrival times for the southbound bus. 
+                I also included northbound but did not create functions for that direction. In the loop function, the code alternates between printing 
+                to the LCD and determing time using the RTC. First the real time is printed and then the next arrival is determined using
+                the findNext functions, which return the next arrival times from the Arrivals object. See inline comments for more details.
+        </div>
+    </section>
+
+    <!-- 8. Further development -->
+    <section id="further-development" aria-labelledby="future-heading">
+        <h2 id="future-heading">Further Development</h2>
+        <ul>
+            <li>Simplify my code by creating one function that determines what day it is and then determines what the nearest arrival is rather
+                than have separate functions for weekday, saturday, and sunday. I also would probably store time in minutes and then convert to 
+                hh:mm to print. It is much harder to work with hours and minutes separately. 
+            </li>
+            <li>Use a 3.3V to 5V level shifter to connect an ESP32 microcontroller to the Arduino. 
+                This could replace the RTC and provide updated time without having to manually reset the RTC when power is disconnected.
+            </li>
+            <li>Obtain OneBusAway API key and implement live bus arrival times using ESP32 with a Python script.
+            </li>
+            <li>Upgrade LCD to a large LED matrix (~64x32) to display on larger screen, allowing for more information such as weather and additional later arrivals.
+            </li>
+
+        </ul>
+    </section>
+    <a href="Proposal.html">View my original project proposal here!</a>
+</body>
+</html>
